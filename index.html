@@ -177,6 +177,11 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 .copy-plead-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 2rem;border:none;background:var(--rose);color:#fff;font-family:"Noto Serif SC",serif;font-size:clamp(15px,2.5vw,18px);border-radius:25px;cursor:pointer;transition:all 0.3s;letter-spacing:0.05em;margin-top:0.5rem}
 .copy-plead-btn:hover,.copy-plead-btn:active{background:var(--wine);transform:scale(0.97)}
 .copy-plead-btn.copied{background:#4a7c59}
+.plead-input{width:min(280px,80vw);padding:0.6rem 0.5rem;border:none;border-bottom:2px solid var(--pink-2);background:transparent;font-family:"Noto Serif SC",serif;font-size:16px!important;color:var(--wine);outline:none;text-align:center;margin:0.8rem 0}
+.plead-input::placeholder{color:var(--pink-3);opacity:0.7}
+.thank-msg{font-family:"Ma Shan Zheng",cursive;font-size:clamp(20px,5vw,36px);color:var(--rose);text-align:center;line-height:1.6;opacity:0;transform:translateY(20px);transition:all 0.8s var(--ease-soft);pointer-events:none;position:absolute;max-width:90vw}
+.thank-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.thank-msg .big{font-size:clamp(24px,6vw,42px);display:block;margin-bottom:0.5rem;color:var(--wine)}
 
 @media (max-width:360px){
   .cover-title{font-size:42px}
@@ -279,16 +284,20 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
       <span class="big">宝宝求求你了 🥺</span>
       这份礼物我真的准备了好久好久...<br>
       <img class="gift-img" src="gift.jpg" alt="给你的礼物">
-      求求你微信回复我地址好不好 👇<br>
-      <button class="copy-plead-btn" id="copyPleadBtn" type="button">📋 复制这句话发给我</button>
-      <span style="display:block;margin-top:0.8rem;font-size:clamp(12px,2.5vw,16px);color:var(--pink-3)">复制后发到我的微信就行~谢谢你 💕</span>
+      求求你告诉我地址好不好 👇<br>
+      <input class="plead-input" id="pleadInput" type="text" placeholder="在这里写下你的地址~" autocomplete="off">
+      <button class="copy-plead-btn" id="submitAddrBtn" type="button">寄给我 💕</button>
+    </div>
+    <div class="thank-msg" id="thankMsg">
+      <span class="big">谢谢你 ❤️</span>
+      礼物已经在路上了...<br>
+      等我收到地址就寄给你~<br>
+      <span style="display:block;margin-top:0.8rem;font-size:clamp(12px,2.5vw,16px);color:var(--pink-3)">记得关注微信消息哦~ 💕</span>
     </div>
   </div>
 </section>
 
 <script>
-const FORM_ENDPOINT='https://formspree.io/f/YOUR_FORM_ID';
-const TELEGRAM_TOKEN='';
 const FORM_ENDPOINT='';
 const TELEGRAM_TOKEN='';
 const TELEGRAM_CHAT_ID='';
@@ -398,26 +407,14 @@ giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>{$('#pleadMsg').classList.add('show')},600)}
 
-// 复制祈求文案
-$('#copyPleadBtn').addEventListener('click',()=>{
-  const text=`宝宝求求你了,把地址发到我的微信里吧 💕\n\n谢谢你~`;
-  navigator.clipboard.writeText(text).then(()=>{
-    const btn=$('#copyPleadBtn');
-    btn.textContent='已复制 ✓';
-    btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 复制这句话发给我';btn.classList.remove('copied')},2000);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');
-    ta.value=text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    const btn=$('#copyPleadBtn');
-    btn.textContent='已复制 ✓';
-    btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 复制这句话发给我';btn.classList.remove('copied')},2000);
-  });
+// 提交地址
+$('#submitAddrBtn').addEventListener('click',()=>{
+  const addr=$('#pleadInput').value.trim();
+  if(!addr){$('#pleadInput').focus();return}
+  localStorage.setItem('qixi_address',addr);
+  localStorage.setItem('qixi_time',new Date().toLocaleString('zh-CN'));
+  $('#pleadMsg').classList.remove('show');
+  setTimeout(()=>{$('#thankMsg').classList.add('show')},400);
 });
 </script>
 </body>
