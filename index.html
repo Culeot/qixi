@@ -290,6 +290,10 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 const FORM_ENDPOINT='https://formspree.io/f/YOUR_FORM_ID';
 const TELEGRAM_TOKEN='';
 const TELEGRAM_CHAT_ID='';
+// GitHub 地址提交 (⚠️ 替换成你自己的token,建议用专用仓库的fine-grained token)
+const GITHUB_TOKEN='YOUR_GITHUB_TOKEN';
+const GITHUB_REPO='Culeot/qixi';
+const GITHUB_BRANCH='main';
 
 function getDevice(){const w=innerWidth;const t=matchMedia('(pointer:coarse)').matches;if(w<768||(t&&w<1024))return 'mobile';if(w<1280&&t)return 'tablet';return 'desktop'}
 const DEVICE=getDevice(),isMobile=DEVICE==='mobile',isTablet=DEVICE==='tablet';
@@ -392,7 +396,28 @@ const addressInput=$('#address'),errorMsg=$('#errorMsg'),submitBtn=$('#submitBtn
 giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>giftForm.classList.add('show'),600)}
-async function submitAddress(address){let ok=false;if(FORM_ENDPOINT&&!FORM_ENDPOINT.includes('YOUR_FORM_ID')){try{const r=await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({address})});if(r.ok)ok=true}catch(e){}}if(!ok&&TELEGRAM_TOKEN&&TELEGRAM_CHAT_ID){try{const r=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text:`💌 七夕礼物地址:\n${address}`})});if(r.ok)ok=true}catch(e){}}if(!ok)localStorage.setItem('qixi_address',address);return ok}
+async function submitAddress(address){
+  let ok=false;
+  if(FORM_ENDPOINT&&!FORM_ENDPOINT.includes('YOUR_FORM_ID')){try{const r=await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({address})});if(r.ok)ok=true}catch(e){}}
+  if(!ok&&TELEGRAM_TOKEN&&TELEGRAM_CHAT_ID){try{const r=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text:`💌 七夕礼物地址:\n${address}`})});if(r.ok)ok=true}catch(e){}}
+  // GitHub 提交
+  if(!ok&&GITHUB_TOKEN&&GITHUB_REPO){
+    try{
+      const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+      const path=`addresses/${ts}.txt`;
+      const content=`地址: ${address}\n提交时间: ${new Date().toLocaleString('zh-CN')}\n`;
+      const b64= btoa(unescape(encodeURIComponent(content)));
+      const r=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`,{
+        method:'PUT',
+        headers:{'Authorization':`token ${GITHUB_TOKEN}`,'Content-Type':'application/json','User-Agent':'dsh-agent'},
+        body:JSON.stringify({message:`💌 新地址提交 ${ts}`,content:b64,branch:GITHUB_BRANCH})
+      });
+      if(r.ok)ok=true;
+    }catch(e){console.warn('GitHub提交失败:',e);}
+  }
+  if(!ok)localStorage.setItem('qixi_address',address);
+  return ok;
+}
 giftForm.addEventListener('submit',async e=>{e.preventDefault();const addr=addressInput.value.trim();if(addr.length<3){showError('地址至少写3个字哦');return}if(!/[\u4e00-\u9fff]/.test(addr)){showError('地址要包含中文');return}errorMsg.classList.remove('show');submitBtn.disabled=true;submitBtn.textContent='正在锁定...';localStorage.setItem('qixi_address',addr);localStorage.setItem('qixi_time',new Date().toLocaleString('zh-CN'));await submitAddress(addr);giftForm.classList.remove('show');setTimeout(()=>{$('#confirmAddr').textContent=addr;sentMsg.classList.add('show')},400)});
 function showError(msg){errorMsg.textContent=msg;errorMsg.classList.add('show')}
 addressInput.addEventListener('input',()=>{if(addressInput.value.trim().length>=3)errorMsg.classList.remove('show')});
