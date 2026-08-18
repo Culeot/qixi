@@ -158,16 +158,27 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 .submit-btn:hover::after,.submit-btn:active::after,.submit-btn:focus::after{width:70%;left:15%}
 .submit-btn:active{transform:scale(0.96)}
 .submit-btn:disabled{opacity:0.5;cursor:not-allowed}
-.sent-msg{font-family:"Ma Shan Zheng",cursive;font-size:clamp(20px,5vw,40px);color:var(--rose);opacity:0;transform:translateY(20px);transition:all 0.8s var(--ease-soft);pointer-events:none;text-align:center}
-.sent-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
-.sent-line{display:block;margin-bottom:0.8rem}
-.sent-addr-wrap{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin-bottom:1rem;font-family:"Noto Serif SC",serif;background:rgba(255,255,255,0.5);padding:0.5rem 1rem;border-radius:8px;word-break:break-all}
-.sent-actions{display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem}
-.modify-btn,.copy-btn{font-family:"Noto Serif SC",serif;font-size:13px;color:var(--rose);background:none;border:1px solid var(--pink-2);border-radius:18px;padding:0.3rem 1rem;cursor:pointer;transition:all 0.3s}
-.modify-btn:hover,.modify-btn:active,.copy-btn:hover,.copy-btn:active{background:var(--pink-1)}
-.copy-btn{color:#fff;background:var(--rose);border-color:var(--rose)}
-.copy-btn:hover,.copy-btn:active{background:var(--wine);border-color:var(--wine)}
-.copy-btn.copied{background:#4a7c59;border-color:#4a7c59}
+/* 祈求消息 */
+.plead-msg{
+  font-family:"Ma Shan Zheng",cursive;
+  font-size:clamp(18px,4vw,28px);
+  color:var(--rose);
+  text-align:center;
+  line-height:1.6;
+  opacity:0;
+  transform:translateY(20px);
+  transition:all 0.8s var(--ease-soft);
+  pointer-events:none;
+  max-width:90vw;
+}
+.plead-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.plead-msg .big{font-size:clamp(22px,5vw,36px);display:block;margin-bottom:0.5rem;color:var(--wine)}
+.plead-msg .wechat-id{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin:0.8rem 0;font-family:"Noto Serif SC",serif;background:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:8px;word-break:break-all}
+.plead-input{width:min(320px,85vw);padding:0.7rem 0.5rem;border:none;border-bottom:2px solid var(--pink-2);background:transparent;font-family:"Noto Serif SC",serif;font-size:16px!important;color:var(--wine);outline:none;text-align:center;margin-bottom:1rem}
+.plead-input::placeholder{color:var(--pink-3);opacity:0.7}
+.copy-plead-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 2rem;border:none;background:var(--rose);color:#fff;font-family:"Noto Serif SC",serif;font-size:clamp(15px,2.5vw,18px);border-radius:25px;cursor:pointer;transition:all 0.3s;letter-spacing:0.05em;margin-top:0.5rem}
+.copy-plead-btn:hover,.copy-plead-btn:active{background:var(--wine);transform:scale(0.97)}
+.copy-plead-btn.copied{background:#4a7c59}
 
 @media (max-width:360px){
   .cover-title{font-size:42px}
@@ -266,37 +277,27 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
         <div class="premium-shadow"></div>
       </div>
     </div>
-    <form class="address-form" id="giftForm" novalidate>
-      <p class="form-msg">宝宝我要送你一个礼物</p>
-      <div class="input-wrap">
-        <input id="address" name="address" type="text" placeholder="告诉我你的地址" required minlength="3" autocomplete="off">
-        <div class="input-underline"></div>
-        <div class="error-msg" id="errorMsg"></div>
-      </div>
-      <button type="submit" class="submit-btn" id="submitBtn">锁定向你</button>
-    </form>
-    <p class="sent-msg" id="sentMsg">
-      <span class="sent-line">礼物已经在路上了 ❤️</span>
-      <span class="sent-addr-wrap" id="confirmAddrWrap">寄到:<span id="confirmAddr"></span></span>
-      <span class="sent-actions">
-        <button class="copy-btn" id="copyAddrBtn" type="button">复制地址</button>
-        <button class="modify-btn" id="modifyAddrBtn" type="button">修改地址</button>
-      </span>
-    </p>
+    <div class="plead-msg" id="pleadMsg">
+      <span class="big">宝宝求求你了 🥺</span>
+      这份礼物我真的准备了好久好久...<br>
+      我好想好想寄给你,可是不知道你住在哪里...<br>
+      求求你把地址留下来好不好 👇<br>
+      <input class="plead-input" id="pleadInput" type="text" placeholder="在这里写下你的地址~" autocomplete="off">
+      <button class="copy-plead-btn" id="copyPleadBtn" type="button">📋 复制地址发给我</button>
+      <span style="display:block;margin-top:0.8rem;font-size:clamp(12px,2.5vw,16px);color:var(--pink-3)">复制后发到我的微信就行~谢谢你 💕</span>
+    </div>
   </div>
 </section>
 
 <script>
 const FORM_ENDPOINT='https://formspree.io/f/YOUR_FORM_ID';
 const TELEGRAM_TOKEN='';
+const FORM_ENDPOINT='';
+const TELEGRAM_TOKEN='';
 const TELEGRAM_CHAT_ID='';
-// 地址提交配置 (config.js 中覆盖这些值)
-const GITHUB_TOKEN='YOUR_GITHUB_TOKEN';
-const GITHUB_REPO='Culeot/qixi';
+const GITHUB_TOKEN='';
+const GITHUB_REPO='';
 const GITHUB_BRANCH='main';
-
-// 尝试加载本地config.js (不提交到仓库)
-document.write('<script src="config.js"><\/script>');
 
 function getDevice(){const w=innerWidth;const t=matchMedia('(pointer:coarse)').matches;if(w<768||(t&&w<1024))return 'mobile';if(w<1280&&t)return 'tablet';return 'desktop'}
 const DEVICE=getDevice(),isMobile=DEVICE==='mobile',isTablet=DEVICE==='tablet';
@@ -398,56 +399,31 @@ const giftBox=$('#giftBox'),giftForm=$('#giftForm'),sentMsg=$('#sentMsg');
 const addressInput=$('#address'),errorMsg=$('#errorMsg'),submitBtn=$('#submitBtn');
 giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
-function openGift(){giftBox.classList.add('opened');setTimeout(()=>giftForm.classList.add('show'),600)}
-async function submitAddress(address){
-  // 读取config.js中覆盖的值(如果有)
-  const token=window.GITHUB_TOKEN||GITHUB_TOKEN;
-  const repo=window.GITHUB_REPO||GITHUB_REPO;
-  const branch=window.GITHUB_BRANCH||GITHUB_BRANCH;
-  let ok=false;
-  if(token&&token!=='YOUR_GITHUB_TOKEN'&&repo){
-    try{
-      const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
-      const path=`addresses/${ts}.txt`;
-      const content=`地址: ${address}\n提交时间: ${new Date().toLocaleString('zh-CN')}\n`;
-      const b64=btoa(unescape(encodeURIComponent(content)));
-      const r=await fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{
-        method:'PUT',
-        headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','User-Agent':'dsh-agent'},
-        body:JSON.stringify({message:`💌 新地址提交 ${ts}`,content:b64,branch})
-      });
-      if(r.ok)ok=true;
-    }catch(e){console.warn('GitHub提交失败:',e);}
-  }
-  if(!ok)localStorage.setItem('qixi_address',address);
-  return ok;
-}
-giftForm.addEventListener('submit',async e=>{e.preventDefault();const addr=addressInput.value.trim();if(addr.length<3){showError('地址至少写3个字哦');return}if(!/[\u4e00-\u9fff]/.test(addr)){showError('地址要包含中文');return}errorMsg.classList.remove('show');submitBtn.disabled=true;submitBtn.textContent='正在锁定...';localStorage.setItem('qixi_address',addr);localStorage.setItem('qixi_time',new Date().toLocaleString('zh-CN'));await submitAddress(addr);giftForm.classList.remove('show');setTimeout(()=>{$('#confirmAddr').textContent=addr;sentMsg.classList.add('show')},400)});
-function showError(msg){errorMsg.textContent=msg;errorMsg.classList.add('show')}
-addressInput.addEventListener('input',()=>{if(addressInput.value.trim().length>=3)errorMsg.classList.remove('show')});
-$('#modifyAddrBtn').addEventListener('click',()=>{sentMsg.classList.remove('show');giftForm.classList.add('show');submitBtn.disabled=false;submitBtn.textContent='锁定向你';addressInput.focus()});
+function openGift(){giftBox.classList.add('opened');setTimeout(()=>{$('#pleadMsg').classList.add('show')},600)}
 
-// 复制地址
-$('#copyAddrBtn').addEventListener('click',()=>{
-  const addr=$('#confirmAddr').textContent;
-  navigator.clipboard.writeText(addr).then(()=>{
-    const btn=$('#copyAddrBtn');
+// 复制祈求地址
+$('#copyPleadBtn').addEventListener('click',()=>{
+  const addr=$('#pleadInput').value.trim();
+  if(!addr){$('#pleadInput').focus();return}
+  const text=`宝宝求求你了,把地址发到我的微信里吧 💕\n\n我的地址:${addr}\n\n谢谢你~`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=$('#copyPleadBtn');
     btn.textContent='已复制 ✓';
     btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='复制地址';btn.classList.remove('copied')},2000);
+    setTimeout(()=>{btn.textContent='📋 复制地址发给我';btn.classList.remove('copied')},2000);
   }).catch(()=>{
-    // 兜底方案
     const ta=document.createElement('textarea');
-    ta.value=addr;
+    ta.value=text;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    const btn=$('#copyAddrBtn');
+    const btn=$('#copyPleadBtn');
     btn.textContent='已复制 ✓';
     btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='复制地址';btn.classList.remove('copied')},2000);
+    setTimeout(()=>{btn.textContent='📋 复制地址发给我';btn.classList.remove('copied')},2000);
   });
+  localStorage.setItem('qixi_address',addr);
 });
 </script>
 </body>
