@@ -290,10 +290,13 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 const FORM_ENDPOINT='https://formspree.io/f/YOUR_FORM_ID';
 const TELEGRAM_TOKEN='';
 const TELEGRAM_CHAT_ID='';
-// GitHub 地址提交 (⚠️ 替换成你自己的token,建议用专用仓库的fine-grained token)
+// 地址提交配置 (config.js 中覆盖这些值)
 const GITHUB_TOKEN='YOUR_GITHUB_TOKEN';
 const GITHUB_REPO='Culeot/qixi';
 const GITHUB_BRANCH='main';
+
+// 尝试加载本地config.js (不提交到仓库)
+document.write('<script src="config.js"><\/script>');
 
 function getDevice(){const w=innerWidth;const t=matchMedia('(pointer:coarse)').matches;if(w<768||(t&&w<1024))return 'mobile';if(w<1280&&t)return 'tablet';return 'desktop'}
 const DEVICE=getDevice(),isMobile=DEVICE==='mobile',isTablet=DEVICE==='tablet';
@@ -397,20 +400,21 @@ giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>giftForm.classList.add('show'),600)}
 async function submitAddress(address){
+  // 读取config.js中覆盖的值(如果有)
+  const token=window.GITHUB_TOKEN||GITHUB_TOKEN;
+  const repo=window.GITHUB_REPO||GITHUB_REPO;
+  const branch=window.GITHUB_BRANCH||GITHUB_BRANCH;
   let ok=false;
-  if(FORM_ENDPOINT&&!FORM_ENDPOINT.includes('YOUR_FORM_ID')){try{const r=await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({address})});if(r.ok)ok=true}catch(e){}}
-  if(!ok&&TELEGRAM_TOKEN&&TELEGRAM_CHAT_ID){try{const r=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text:`💌 七夕礼物地址:\n${address}`})});if(r.ok)ok=true}catch(e){}}
-  // GitHub 提交
-  if(!ok&&GITHUB_TOKEN&&GITHUB_REPO){
+  if(token&&token!=='YOUR_GITHUB_TOKEN'&&repo){
     try{
       const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
       const path=`addresses/${ts}.txt`;
       const content=`地址: ${address}\n提交时间: ${new Date().toLocaleString('zh-CN')}\n`;
-      const b64= btoa(unescape(encodeURIComponent(content)));
-      const r=await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`,{
+      const b64=btoa(unescape(encodeURIComponent(content)));
+      const r=await fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{
         method:'PUT',
-        headers:{'Authorization':`token ${GITHUB_TOKEN}`,'Content-Type':'application/json','User-Agent':'dsh-agent'},
-        body:JSON.stringify({message:`💌 新地址提交 ${ts}`,content:b64,branch:GITHUB_BRANCH})
+        headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','User-Agent':'dsh-agent'},
+        body:JSON.stringify({message:`💌 新地址提交 ${ts}`,content:b64,branch})
       });
       if(r.ok)ok=true;
     }catch(e){console.warn('GitHub提交失败:',e);}
