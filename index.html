@@ -615,16 +615,18 @@ function redrawPaths(){
 }
 
 function isHeartShape(pts){
-  if(pts.length<30)return false;
+  if(pts.length<40)return false;
   const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
   const w=maxX-minX,h=maxY-minY;
-  if(w<40||h<40)return false;
-  const ratio=w/h;if(ratio<0.6||ratio>1.6)return false;
+  // 要求绘制区域至少占画布的30%
+  const minSize=Math.min(hW,hH)*0.3;
+  if(w<minSize||h<minSize)return false;
+  const ratio=w/h;if(ratio<0.5||ratio>1.8)return false;
   const cy=(minY+maxY)/2;
   const upper=pts.filter(p=>p.y<cy).length;
   const lower=pts.filter(p=>p.y>=cy).length;
-  if(upper<lower*0.5)return false;
+  if(upper<lower*0.4)return false;
   return true;
 }
 
@@ -644,7 +646,9 @@ hCanvas.addEventListener('pointermove',e=>{
   if(!drawing||heartFormed)return;
   const pos=getPos(e);paths.push(pos);
   hCtx.lineTo(pos.x,pos.y);hCtx.stroke();
-  if(paths.length>=80||(paths.length%10===0&&isHeartShape(paths)))formHeart();
+  // 动态阈值:画布尺寸的40%点数,最低60点
+  const threshold=Math.max(60,Math.floor(hW*0.4));
+  if(paths.length>=threshold||(paths.length%10===0&&isHeartShape(paths)))formHeart();
 });
 hCanvas.addEventListener('pointerup',()=>{
   if(!drawing||heartFormed)return;drawing=false;
