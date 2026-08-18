@@ -388,8 +388,7 @@ class Particle{constructor(x,y,vx,vy,c){this.x=x;this.y=y;this.vx=vx;this.vy=vy;
 function spawnParticles(x,y){for(let i=0;i<40;i++){const a=Math.random()*Math.PI*2,sp=2+Math.random()*4;burstParticles.push(new Particle(x,y,Math.cos(a)*sp,Math.sin(a)*sp,COLORS[Math.floor(Math.random()*COLORS.length)]))}if(!bursting){bursting=true;tickBurst()}}
 function tickBurst(){if(!bursting)return;burstParticles.forEach(p=>{p.update();p.draw()});burstParticles=burstParticles.filter(p=>p.life>0);if(burstParticles.length===0){bursting=false;return}requestAnimationFrame(tickBurst)}
 
-const giftBox=$('#giftBox'),giftForm=$('#giftForm'),sentMsg=$('#sentMsg');
-const addressInput=$('#address'),errorMsg=$('#errorMsg'),submitBtn=$('#submitBtn');
+const giftBox=$('#giftBox');
 giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>{$('#pleadMsg').classList.add('show')},600)}
