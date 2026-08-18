@@ -173,9 +173,7 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 }
 .plead-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .plead-msg .big{font-size:clamp(22px,5vw,36px);display:block;margin-bottom:0.5rem;color:var(--wine)}
-.plead-msg .wechat-id{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin:0.8rem 0;font-family:"Noto Serif SC",serif;background:rgba(255,255,255,0.6);padding:0.4rem 0.8rem;border-radius:8px;word-break:break-all}
-.plead-input{width:min(320px,85vw);padding:0.7rem 0.5rem;border:none;border-bottom:2px solid var(--pink-2);background:transparent;font-family:"Noto Serif SC",serif;font-size:16px!important;color:var(--wine);outline:none;text-align:center;margin-bottom:1rem}
-.plead-input::placeholder{color:var(--pink-3);opacity:0.7}
+.plead-msg .gift-img{width:clamp(120px,30vw,200px);height:clamp(120px,30vw,200px);object-fit:cover;border-radius:16px;margin:0.8rem auto;display:block;box-shadow:0 8px 30px rgba(184,92,110,0.3)}
 .copy-plead-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 2rem;border:none;background:var(--rose);color:#fff;font-family:"Noto Serif SC",serif;font-size:clamp(15px,2.5vw,18px);border-radius:25px;cursor:pointer;transition:all 0.3s;letter-spacing:0.05em;margin-top:0.5rem}
 .copy-plead-btn:hover,.copy-plead-btn:active{background:var(--wine);transform:scale(0.97)}
 .copy-plead-btn.copied{background:#4a7c59}
@@ -280,10 +278,9 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
     <div class="plead-msg" id="pleadMsg">
       <span class="big">宝宝求求你了 🥺</span>
       这份礼物我真的准备了好久好久...<br>
-      我好想好想寄给你,可是不知道你住在哪里...<br>
-      求求你把地址留下来好不好 👇<br>
-      <input class="plead-input" id="pleadInput" type="text" placeholder="在这里写下你的地址~" autocomplete="off">
-      <button class="copy-plead-btn" id="copyPleadBtn" type="button">📋 复制地址发给我</button>
+      <img class="gift-img" src="gift.jpg" alt="给你的礼物">
+      求求你微信回复我地址好不好 👇<br>
+      <button class="copy-plead-btn" id="copyPleadBtn" type="button">📋 复制这句话发给我</button>
       <span style="display:block;margin-top:0.8rem;font-size:clamp(12px,2.5vw,16px);color:var(--pink-3)">复制后发到我的微信就行~谢谢你 💕</span>
     </div>
   </div>
@@ -401,16 +398,14 @@ giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>{$('#pleadMsg').classList.add('show')},600)}
 
-// 复制祈求地址
+// 复制祈求文案
 $('#copyPleadBtn').addEventListener('click',()=>{
-  const addr=$('#pleadInput').value.trim();
-  if(!addr){$('#pleadInput').focus();return}
-  const text=`宝宝求求你了,把地址发到我的微信里吧 💕\n\n我的地址:${addr}\n\n谢谢你~`;
+  const text=`宝宝求求你了,把地址发到我的微信里吧 💕\n\n谢谢你~`;
   navigator.clipboard.writeText(text).then(()=>{
     const btn=$('#copyPleadBtn');
     btn.textContent='已复制 ✓';
     btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 复制地址发给我';btn.classList.remove('copied')},2000);
+    setTimeout(()=>{btn.textContent='📋 复制这句话发给我';btn.classList.remove('copied')},2000);
   }).catch(()=>{
     const ta=document.createElement('textarea');
     ta.value=text;
@@ -421,9 +416,8 @@ $('#copyPleadBtn').addEventListener('click',()=>{
     const btn=$('#copyPleadBtn');
     btn.textContent='已复制 ✓';
     btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 复制地址发给我';btn.classList.remove('copied')},2000);
+    setTimeout(()=>{btn.textContent='📋 复制这句话发给我';btn.classList.remove('copied')},2000);
   });
-  localStorage.setItem('qixi_address',addr);
 });
 </script>
 </body>
