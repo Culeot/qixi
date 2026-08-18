@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>七夕 · 只为你</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,6 @@
 :root{
   --bg:#FBF1EF;--pink-1:#F8DDE2;--pink-2:#F3C6CD;--pink-3:#E39AA6;
   --rose:#B85C6E;--wine:#6F2E3A;--gold:#D7B98E;--gold-deep:#C9A26B;
-  --ink:#2C1D22;--cream:#FFF9F6;
   --ease-soft:cubic-bezier(0.16,1,0.3,1);
   --ease-bounce:cubic-bezier(0.34,1.56,0.64,1);
 }
@@ -22,32 +21,36 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 @supports (hover:hover) and (pointer:fine){body{cursor:none}}
 ::selection{background:var(--pink-2);color:var(--wine)}
 
+/* body 锁定滚动 */
+body.overflow-locked{overflow:hidden!important;position:fixed;width:100%;height:100%;touch-action:none;overscroll-behavior:none}
+
 /* 噪点 */
 .grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.04;mix-blend-mode:overlay}
 
 /* 光标 */
-.cursor{position:fixed;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,rgba(215,185,142,0.7),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s var(--ease-soft),opacity 0.3s;mix-blend-mode:multiply}
+.cursor{position:fixed;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,rgba(215,185,142,0.7),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s var(--ease-soft),opacity:0.3s;mix-blend-mode:multiply}
 .cursor.click{transform:translate(-50%,-50%) scale(2.5);opacity:0.3}
 @media (hover:none),(pointer:coarse){.cursor{display:none}body{cursor:auto}}
 
 /* 花瓣粒子 */
 #petalCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-
-/* 光晕 */
 .halo{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:breathe 8s ease-in-out infinite alternate}
 .halo-1{width:60vw;height:60vw;top:-10%;right:-15%;background:radial-gradient(circle,rgba(248,221,226,0.5),transparent 65%)}
 .halo-2{width:45vw;height:45vw;bottom:-10%;left:-10%;background:radial-gradient(circle,rgba(243,198,205,0.4),transparent 60%);animation-delay:-4s}
 @keyframes breathe{from{transform:scale(0.9);opacity:0.4}to{transform:scale(1.2);opacity:0.8}}
-
-/* 流体 */
 .organic-blob{position:fixed;filter:url(#liquid);z-index:0;pointer-events:none;animation:flow 16s ease-in-out infinite alternate}
 .organic-blob-1{width:38vw;height:38vw;top:25vh;right:-5vw;background:var(--pink-2);opacity:0.3}
 .organic-blob-2{width:28vw;height:28vw;bottom:15vh;left:-8vw;background:var(--pink-1);opacity:0.25;animation-delay:-8s;animation-duration:20s}
 @keyframes flow{from{transform:translateX(-3%) rotate(-2deg)}to{transform:translateX(3%) rotate(2deg)}}
 
 /* 场景 */
-.scene{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10vh 8vw;opacity:0;transition:opacity 1s var(--ease-soft),transform 1s var(--ease-soft);pointer-events:none;position:absolute;top:0;left:0;width:100%;z-index:1;transform:translateY(30px)}
-.scene.active{opacity:1;pointer-events:auto;position:relative;z-index:2;transform:translateY(0)}
+.scene{min-height:100dvh;display:none;flex-direction:column;justify-content:center;align-items:center;padding:10vh 8vw;position:relative;width:100%;overflow:hidden;touch-action:manipulation}
+.scene.active{display:flex}
+
+/* 画心场景固定 */
+#scene-heart{height:100dvh;overflow:hidden;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;touch-action:none;overscroll-behavior:none;padding:0}
+#scene-heart *{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#scene-heart.active{display:flex}
 
 /* 加载 */
 #loading{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);transition:opacity 0.8s var(--ease-soft)}
@@ -63,7 +66,6 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 .cover-sub{grid-column:5/9;grid-row:2/3;justify-self:end;align-self:start;font-family:"Ma Shan Zheng",cursive;font-size:clamp(24px,5vw,56px);color:var(--rose);margin-top:4vh}
 .cover-btn-wrap{grid-column:1/5;grid-row:3/4;margin-top:6vh}
 
-/* 按钮 */
 .btn-love{position:relative;display:inline-flex;align-items:center;gap:0.75rem;padding:0.9rem 2.4rem;border:none;background:transparent;font-family:"Noto Serif SC",serif;font-size:clamp(16px,2.5vw,20px);color:var(--wine);cursor:pointer;letter-spacing:0.08em;transition:all 0.3s var(--ease-soft);touch-action:manipulation}
 .btn-love .btn-underline{position:absolute;bottom:0;left:50%;width:0;height:2px;background:var(--gold);transition:width 0.6s var(--ease-soft),left 0.6s var(--ease-soft)}
 .btn-love:hover .btn-underline,.btn-love:active .btn-underline,.btn-love:focus .btn-underline{width:85%;left:7.5%}
@@ -81,7 +83,6 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 #act-2 .poem-line:nth-child(2) span{transition-delay:0.35s}
 #act-2 .poem-line:nth-child(3) span{transition-delay:0.6s}
 
-/* 继续按钮 */
 #poemBtnWrap{grid-column:3/7;margin-top:3rem;opacity:0;pointer-events:none;transition:opacity 0.8s var(--ease-soft)}
 #poemBtnWrap.show{opacity:1;pointer-events:auto}
 .continue-hint{text-align:center;margin-bottom:12px}
@@ -91,25 +92,23 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 @keyframes glowPulse{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(1.4);opacity:0.6}}
 
 /* 画心 */
-#act-3{padding-top:5rem}
-#act-3 .hint{font-family:"Ma Shan Zheng",cursive;font-size:clamp(20px,4vw,36px);color:var(--rose);margin-bottom:1rem;opacity:0;transition:opacity 0.8s var(--ease-soft)}
-#act-3 .hint.show{opacity:1}
+#scene-heart .hint{font-family:"Ma Shan Zheng",cursive;font-size:clamp(18px,3.5vw,32px);color:var(--rose);margin-bottom:0.8rem;opacity:0;transition:opacity 0.8s var(--ease-soft);text-align:center;padding:0 1rem}
+#scene-heart .hint.show{opacity:1}
 .draw-container{position:relative;display:flex;justify-content:center;align-items:center}
 .draw-canvas-wrapper{position:relative}
-#heartCanvas{position:relative;z-index:2;border-radius:50%;background:rgba(251,241,239,0.5);box-shadow:0 0 0 2px rgba(215,185,142,0.3),inset 0 0 30px rgba(248,221,226,0.8)}
+#heartCanvas{position:relative;z-index:2;border-radius:50%;background:rgba(251,241,239,0.5);box-shadow:0 0 0 2px rgba(215,185,142,0.3),inset 0 0 30px rgba(248,221,226,0.8);touch-action:none;pointer-events:auto;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 #guideCanvas{position:absolute;top:0;left:0;z-index:3;pointer-events:none;border-radius:50%}
-#draw-progress{position:absolute;top:-36px;left:50%;transform:translateX(-50%);font-family:"Ma Shan Zheng",cursive;font-size:clamp(14px,2.5vw,18px);color:var(--rose);background:rgba(248,221,226,0.85);padding:4px 14px;border-radius:16px;white-space:nowrap;z-index:4}
+#draw-progress{position:absolute;top:-36px;left:50%;transform:translateX(-50%);font-family:"Ma Shan Zheng",cursive;font-size:clamp(13px,2.5vw,17px);color:var(--rose);background:rgba(248,221,226,0.85);padding:3px 12px;border-radius:16px;white-space:nowrap;z-index:4}
 .heart-success{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.6s;z-index:5}
 .heart-success.show{opacity:1}
-.heart-success .beat-heart{font-size:clamp(60px,15vw,100px);animation:beat 0.6s var(--ease-bounce)}
-.heart-success .baby-text{font-family:"Ma Shan Zheng",cursive;font-size:clamp(36px,8vw,72px);color:var(--rose);margin-top:1rem;text-shadow:0 2px 20px rgba(184,92,110,0.3)}
+.heart-success .beat-heart{font-size:clamp(50px,13vw,90px);animation:beat 0.6s var(--ease-bounce)}
+.heart-success .baby-text{font-family:"Ma Shan Zheng",cursive;font-size:clamp(32px,7vw,68px);color:var(--rose);margin-top:0.8rem;text-shadow:0 2px 20px rgba(184,92,110,0.3)}
 @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
 
 #goldLineToGift{width:2px;height:0;background:linear-gradient(to bottom,var(--gold),var(--gold-deep));transition:height 1.5s var(--ease-soft);margin:0 auto}
-#goldLineToGift.show{height:30vh}
+#goldLineToGift.show{height:25vh}
 
 /* ========== 精致2D礼物盒 ========== */
-#act-4{padding-top:5rem;padding-bottom:2rem}
 .gift-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;width:100%}
 .gift-box-wrap{perspective:1200px;opacity:0;transform:translateY(30px);transition:all 1s var(--ease-soft)}
 .gift-box-wrap.show{opacity:1;transform:translateY(0)}
@@ -122,17 +121,14 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 
 .body-premium{position:absolute;bottom:20px;left:15px;width:210px;height:165px;background:linear-gradient(100deg,rgba(255,255,255,0.35) 0%,transparent 25%),linear-gradient(160deg,#f8dde2 0%,#f3c6cd 40%,#e39aa6 75%,#cf8290 100%);border-radius:12px 12px 16px 16px;box-shadow:inset -2px -4px 12px rgba(111,46,58,0.25),inset 2px 4px 12px rgba(255,255,255,0.6),0 10px 30px rgba(111,46,58,0.3);overflow:hidden}
 .body-premium::after{content:'';position:absolute;bottom:-8px;left:0;right:0;height:16px;background:linear-gradient(180deg,#c97a8a 0%,#b85c6e 100%);border-radius:0 0 16px 16px;z-index:-1}
-
 .body-ribbon-v{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:28px;background:linear-gradient(90deg,#c9a26b,#d7b98e 20%,#e8cfa0 35%,#d7b98e 50%,#c9a26b 65%,#a8864f 100%);box-shadow:inset 0 2px 4px rgba(255,255,255,0.5),inset 0 -2px 4px rgba(0,0,0,0.15);z-index:2}
 .body-ribbon-h{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:28px;background:linear-gradient(180deg,#c9a26b,#d7b98e 20%,#e8cfa0 35%,#d7b98e 50%,#c9a26b 65%,#a8864f 100%);box-shadow:inset 0 2px 4px rgba(255,255,255,0.5),inset 0 -2px 4px rgba(0,0,0,0.15);z-index:2}
-
 .heart-badge{position:absolute;top:52%;left:50%;transform:translate(-50%,-50%);width:52px;height:48px;background:linear-gradient(145deg,#e39aa6,#b85c6e);clip-path:path('M26 47C12 37 4 29 4 17C4 9 10 3 17 3C21 3 24.5 5 26 8C27.5 5 31 3 35 3C42 3 48 9 48 17C48 29 40 37 26 47Z');display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 4px 12px rgba(111,46,58,0.4),inset 0 2px 6px rgba(255,255,255,0.4)}
 .heart-badge::after{content:'♥';font-size:20px;color:rgba(255,255,255,0.9);text-shadow:0 1px 2px rgba(0,0,0,0.2)}
 
 .lid-premium{position:absolute;top:0;left:8px;width:224px;height:40px;transform-origin:bottom center;transition:transform 1s var(--ease-bounce);z-index:5}
 .gift-premium.opened .lid-premium{transform:translateY(-60px) rotateX(-20deg);opacity:0.9}
 .gift-premium.opened .bow-premium{transform:translateX(-50%) translateY(-60px);opacity:0.7}
-
 .lid-top-surface{position:absolute;top:0;left:0;right:0;height:32px;background:linear-gradient(100deg,rgba(255,255,255,0.4) 0%,transparent 30%),linear-gradient(160deg,#f8dde2 0%,#f3c6cd 40%,#e39aa6 100%);border-radius:10px 10px 4px 4px;box-shadow:inset 2px 4px 10px rgba(255,255,255,0.6),inset -2px -2px 8px rgba(111,46,58,0.2),0 4px 10px rgba(111,46,58,0.25)}
 .lid-front-edge{position:absolute;bottom:0;left:0;right:0;height:12px;background:linear-gradient(180deg,#d7a0ac 0%,#c97a8a 60%,#b85c6e 100%);border-radius:0 0 8px 8px;box-shadow:0 3px 6px rgba(111,46,58,0.3)}
 .lid-ribbon-v{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:28px;background:linear-gradient(90deg,#c9a26b,#d7b98e 30%,#e8cfa0 50%,#d7b98e 70%,#a8864f);z-index:2}
@@ -244,13 +240,13 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
   </div>
 </section>
 
-<section class="scene" id="act-3">
+<section class="scene" id="scene-heart">
   <p class="hint" id="heartHint">用手指画颗心给我看看 ♡</p>
+  <div id="draw-progress">心意完成度 0%</div>
   <div class="draw-container">
     <div class="draw-canvas-wrapper">
       <canvas id="heartCanvas"></canvas>
       <canvas id="guideCanvas"></canvas>
-      <div id="draw-progress">心意完成度 0%</div>
     </div>
   </div>
   <div class="heart-success" id="heartSuccess">
@@ -277,7 +273,6 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
           <div class="bow-tail bow-tail-right"></div>
         </div>
         <div class="body-premium">
-          <div class="body-front-surface"></div>
           <div class="body-ribbon-v"></div>
           <div class="body-ribbon-h"></div>
           <div class="heart-badge"></div>
@@ -341,9 +336,13 @@ function tick(){pCtx.clearRect(0,0,pw,ph);petals.forEach(p=>{p.update();p.draw()
 tick();
 function setSpeed(m){petals.forEach(p=>{p.vy=(0.5+Math.random()*1.2)*m})}
 
-/* 场景 */
-const scenes=$$('.scene');let curScene=0;
-function showScene(i){scenes.forEach((s,x)=>s.classList.toggle('active',x===i));curScene=i;if(i===1)setTimeout(startPoem,400);if(i===2)setTimeout(()=>{$('#heartHint').classList.add('show')},600);if(i===3)setTimeout(()=>$('#giftBoxWrap').classList.add('show'),400)}
+/* ============ 场景切换与滚动锁定 ============ */
+let currentSceneId=null;
+function showScene(i){const s=$$('.scene');s.forEach((x,n)=>x.classList.toggle('active',n===i));currentSceneId=s[i].id;if(currentSceneId==='scene-heart'){lockScroll();scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}else{unlockScroll()}if(i===1)setTimeout(startPoem,400);if(i===2)setTimeout(()=>{$('#heartHint').classList.add('show')},600);if(i===3)setTimeout(()=>$('#giftBoxWrap').classList.add('show'),400)}
+function lockScroll(){document.body.classList.add('overflow-locked');addEventListener('touchmove',preventScroll,{passive:false});addEventListener('gesturestart',preventGesture,{passive:false});addEventListener('gesturechange',preventGesture,{passive:false})}
+function unlockScroll(){document.body.classList.remove('overflow-locked');removeEventListener('touchmove',preventScroll);removeEventListener('gesturestart',preventGesture);removeEventListener('gesturechange',preventGesture)}
+function preventScroll(e){if(currentSceneId==='scene-heart')e.preventDefault()}
+function preventGesture(e){if(currentSceneId==='scene-heart')e.preventDefault()}
 
 /* 加载 */
 const loading=$('#loading'),progressFill=$('#progressFill');
@@ -356,11 +355,11 @@ $('#openBtn').addEventListener('click',()=>{setSpeed(0.4);showScene(1);initBgm()
 function startPoem(){$$('#act-2 .poem-line').forEach((l,i)=>setTimeout(()=>l.classList.add('revealed'),i*900));setTimeout(()=>{$('#poemBtnWrap').classList.add('show');$('#continueHint').style.display='none'},3200)}
 $('#continueToDraw').addEventListener('click',()=>{showScene(2);initBgm()});
 
-/* 画心(网格覆盖+引导) */
+/* ============ 画心(网格覆盖+引导+滚动锁定) ============ */
 const hCanvas=$('#heartCanvas'),hCtx=hCanvas.getContext('2d');
 const guideCanvas=$('#guideCanvas'),gCtx=guideCanvas.getContext('2d');
 const heartSuccess=$('#heartSuccess');
-let hW,hH,drawing=false,heartFormed=false,isUserDrawing=false;
+let hW,hH,drawing=false,heartFormed=false,isUserDrawing=false,activePointerId=null;
 const GRID=20;
 let heartMask=[],covered=[],totalTrail=0,isDrawable=true,guideSize=0,guideOpacity=1,guideFadeStart=null,guideAnimId=null;
 
@@ -373,8 +372,10 @@ function checkCompletion(){const p=calcProgress();updateDrawProgress(p);const mi
 function completeHeart(){if(!isDrawable)return;isDrawable=false;for(let i=0;i<GRID;i++)for(let j=0;j<GRID;j++)if(heartMask[i][j])covered[i][j]=true;drawFullHeart();setTimeout(()=>formHeart(),600)}
 function drawFullHeart(){const step=hW/GRID;hCtx.fillStyle='rgba(184,92,110,0.5)';for(let i=0;i<GRID;i++)for(let j=0;j<GRID;j++)if(heartMask[i][j])hCtx.fillRect(j*step,i*step,step,step)}
 function formHeart(){heartFormed=true;drawing=false;spawnParticles(hW/2,hH/2);setTimeout(()=>{heartSuccess.classList.add('show');setTimeout(()=>{heartSuccess.classList.remove('show');$('#goldLineToGift').classList.add('show');setTimeout(()=>{$('#goldLineToGift').classList.remove('show');showScene(3)},1500)},3000)},300)}
-function resizeHeart(){const wrap=hCanvas.parentElement;const sW=innerWidth,sH=innerHeight;const availW=sW-40,maxH=sH*0.55;let size=Math.min(availW,maxH);size=Math.floor(size);if(size<200)size=200;hW=hCanvas.width=size;hH=hCanvas.height=size;initHeartMask();initGuide(size)}
-addEventListener('resize',resizeHeart);setTimeout(resizeHeart,100);
+
+function resizeHeartCanvas(){const wrap=document.querySelector('.heart-canvas-wrap');if(!wrap)return;const sW=innerWidth,sH=innerHeight;const maxW=Math.min(sW*0.85,420);const maxH=sH*0.55;let size=Math.floor(Math.min(maxW,maxH,sW-40));if(size<200)size=200;const dpr=window.devicePixelRatio||1;hCanvas.width=size*dpr;hCanvas.height=size*dpr;hCanvas.style.width=size+'px';hCanvas.style.height=size+'px';hCtx.setTransform(dpr,0,0,dpr,0,0);wrap.style.width=size+'px';wrap.style.height=size+'px';hW=size;hH=size;initHeartMask();initGuide(size)}
+addEventListener('resize',resizeHeartCanvas);addEventListener('orientationchange',()=>setTimeout(resizeHeartCanvas,300));
+setTimeout(resizeHeartCanvas,100);
 
 /* 引导层 */
 function heartPoint(t,scale,cx,cy){const x=16*Math.pow(Math.sin(t),3);const y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);return{x:cx+x*scale/17,y:cy-y*scale/17}}
@@ -384,13 +385,19 @@ function initGuide(size){guideSize=size;guideCanvas.width=size;guideCanvas.heigh
 function onUserStartDraw(){isUserDrawing=true;guideFadeStart=null}
 function onUserStopDraw(){isUserDrawing=false;guideFadeStart=null}
 
-/* 绘画事件 */
+/* 绘画事件(Pointer+Touch双套) */
 let pathPoints=[];
 function getPos(e){const r=hCanvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-hCanvas.addEventListener('pointerdown',e=>{if(heartFormed||!isDrawable)return;drawing=true;totalTrail=0;pathPoints=[];const pos=getPos(e);pathPoints.push(pos);hCtx.beginPath();hCtx.moveTo(pos.x,pos.y);hCtx.strokeStyle='rgba(184,92,110,0.7)';hCtx.lineWidth=3;hCtx.lineCap='round';hCtx.lineJoin='round';onUserStartDraw()});
-hCanvas.addEventListener('pointermove',e=>{if(!drawing||heartFormed)return;const pos=getPos(e);const prev=pathPoints[pathPoints.length-1];totalTrail+=Math.hypot(pos.x-prev.x,pos.y-prev.y);pathPoints.push(pos);updateCoverage(pos.x,pos.y);checkCompletion();hCtx.lineTo(pos.x,pos.y);hCtx.stroke()});
-hCanvas.addEventListener('pointerup',()=>{drawing=false;pathPoints=[];onUserStopDraw()});
-hCanvas.addEventListener('pointerleave',()=>{drawing=false});
+
+hCanvas.addEventListener('pointerdown',e=>{if(heartFormed||!isDrawable)return;e.preventDefault();drawing=true;activePointerId=e.pointerId;totalTrail=0;pathPoints=[];const pos=getPos(e);pathPoints.push(pos);hCtx.beginPath();hCtx.moveTo(pos.x,pos.y);hCtx.strokeStyle='rgba(184,92,110,0.7)';hCtx.lineWidth=3;hCtx.lineCap='round';hCtx.lineJoin='round';onUserStartDraw();try{hCanvas.setPointerCapture(e.pointerId)}catch(err){}});
+hCanvas.addEventListener('pointermove',e=>{if(!drawing||heartFormed||e.pointerId!==activePointerId)return;e.preventDefault();const pos=getPos(e);const prev=pathPoints[pathPoints.length-1];totalTrail+=Math.hypot(pos.x-prev.x,pos.y-prev.y);pathPoints.push(pos);updateCoverage(pos.x,pos.y);checkCompletion();hCtx.lineTo(pos.x,pos.y);hCtx.stroke()});
+hCanvas.addEventListener('pointerup',e=>{if(e.pointerId!==activePointerId)return;e.preventDefault();drawing=false;pathPoints=[];activePointerId=null;onUserStopDraw();try{hCanvas.releasePointerCapture(e.pointerId)}catch(err){}});
+hCanvas.addEventListener('pointercancel',e=>{if(e.pointerId!==activePointerId)return;drawing=false;pathPoints=[];activePointerId=null;onUserStopDraw()});
+
+hCanvas.addEventListener('touchstart',e=>{if(heartFormed||!isDrawable)return;e.preventDefault();const t=e.touches[0];if(!t)return;drawing=true;totalTrail=0;pathPoints=[];const r=hCanvas.getBoundingClientRect();const pos={x:t.clientX-r.left,y:t.clientY-r.top};pathPoints.push(pos);hCtx.beginPath();hCtx.moveTo(pos.x,pos.y);hCtx.strokeStyle='rgba(184,92,110,0.7)';hCtx.lineWidth=3;hCtx.lineCap='round';hCtx.lineJoin='round';onUserStartDraw()},{passive:false});
+hCanvas.addEventListener('touchmove',e=>{if(!drawing||heartFormed)return;e.preventDefault();const t=e.touches[0];if(!t)return;const r=hCanvas.getBoundingClientRect();const pos={x:t.clientX-r.left,y:t.clientY-r.top};const prev=pathPoints[pathPoints.length-1];totalTrail+=Math.hypot(pos.x-prev.x,pos.y-prev.y);pathPoints.push(pos);updateCoverage(pos.x,pos.y);checkCompletion();hCtx.lineTo(pos.x,pos.y);hCtx.stroke()},{passive:false});
+hCanvas.addEventListener('touchend',e=>{e.preventDefault();drawing=false;pathPoints=[];onUserStopDraw()},{passive:false});
+hCanvas.addEventListener('touchcancel',e=>{drawing=false;pathPoints=[];onUserStopDraw()},{passive:false});
 
 /* 粒子 */
 let burstParticles=[],bursting=false;
@@ -407,7 +414,6 @@ const addressInput=$('#address'),errorMsg=$('#errorMsg'),submitBtn=$('#submitBtn
 giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>giftForm.classList.add('show'),600)}
-
 async function submitAddress(address){let ok=false;if(FORM_ENDPOINT&&!FORM_ENDPOINT.includes('YOUR_FORM_ID')){try{const r=await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({address})});if(r.ok)ok=true}catch(e){}}if(!ok&&TELEGRAM_TOKEN&&TELEGRAM_CHAT_ID){try{const r=await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TELEGRAM_CHAT_ID,text:`💌 七夕礼物地址:\n${address}`})});if(r.ok)ok=true}catch(e){}}if(!ok)localStorage.setItem('qixi_address',address);return ok}
 giftForm.addEventListener('submit',async e=>{e.preventDefault();const addr=addressInput.value.trim();if(addr.length<3){showError('地址至少写3个字哦');return}if(!/[\u4e00-\u9fff]/.test(addr)){showError('地址要包含中文');return}errorMsg.classList.remove('show');submitBtn.disabled=true;submitBtn.textContent='正在锁定...';localStorage.setItem('qixi_address',addr);localStorage.setItem('qixi_time',new Date().toLocaleString('zh-CN'));await submitAddress(addr);giftForm.classList.remove('show');setTimeout(()=>{$('#confirmAddr').textContent=addr;sentMsg.classList.add('show')},400)});
 function showError(msg){errorMsg.textContent=msg;errorMsg.classList.add('show')}
