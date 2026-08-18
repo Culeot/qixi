@@ -177,11 +177,7 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 .copy-plead-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 2rem;border:none;background:var(--rose);color:#fff;font-family:"Noto Serif SC",serif;font-size:clamp(15px,2.5vw,18px);border-radius:25px;cursor:pointer;transition:all 0.3s;letter-spacing:0.05em;margin-top:0.5rem}
 .copy-plead-btn:hover,.copy-plead-btn:active{background:var(--wine);transform:scale(0.97)}
 .copy-plead-btn.copied{background:#4a7c59}
-.plead-input{width:min(280px,80vw);padding:0.6rem 0.5rem;border:none;border-bottom:2px solid var(--pink-2);background:transparent;font-family:"Noto Serif SC",serif;font-size:16px!important;color:var(--wine);outline:none;text-align:center;margin:0.8rem 0}
-.plead-input::placeholder{color:var(--pink-3);opacity:0.7}
-.thank-msg{font-family:"Ma Shan Zheng",cursive;font-size:clamp(20px,5vw,36px);color:var(--rose);text-align:center;line-height:1.6;opacity:0;transform:translateY(20px);transition:all 0.8s var(--ease-soft);pointer-events:none;position:absolute;max-width:90vw}
-.thank-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
-.thank-msg .big{font-size:clamp(24px,6vw,42px);display:block;margin-bottom:0.5rem;color:var(--wine)}
+.wechat-msg{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin:0.8rem 0;font-family:"Noto Serif SC",serif;background:rgba(255,255,255,0.6);padding:0.5rem 1rem;border-radius:8px;word-break:break-all;border:1px dashed var(--pink-3)}
 
 @media (max-width:360px){
   .cover-title{font-size:42px}
@@ -280,19 +276,13 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
         <div class="premium-shadow"></div>
       </div>
     </div>
-    <div class="plead-msg" id="pleadMsg">
+    <div class="plead-msg show" id="pleadMsg">
       <span class="big">宝宝求求你了 🥺</span>
       这份礼物我真的准备了好久好久...<br>
-      <img class="gift-img" src="gift.jpg" alt="给你的礼物">
-      求求你告诉我地址好不好 👇<br>
-      <input class="plead-input" id="pleadInput" type="text" placeholder="在这里写下你的地址~" autocomplete="off">
-      <button class="copy-plead-btn" id="submitAddrBtn" type="button">寄给我 💕</button>
-    </div>
-    <div class="thank-msg" id="thankMsg">
-      <span class="big">谢谢你 ❤️</span>
-      礼物已经在路上了...<br>
-      等我收到地址就寄给你~<br>
-      <span style="display:block;margin-top:0.8rem;font-size:clamp(12px,2.5vw,16px);color:var(--pink-3)">记得关注微信消息哦~ 💕</span>
+      <img class="gift-img" src="gift.jpg" alt="给你的礼物" onerror="this.style.display='none'">
+      求求你把地址发到微信对话框里好不好 👇<br>
+      <span style="display:block;margin-top:0.8rem;font-size:clamp(14px,3vw,20px);color:var(--wine)">直接复制下面这句话发到微信就行~</span>
+      <span class="wechat-msg" id="wechatMsg">宝宝求求你了,把地址发给我吧 💕</span>
     </div>
   </div>
 </section>
@@ -407,14 +397,6 @@ giftBox.addEventListener('click',openGift);
 giftBox.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')openGift()});
 function openGift(){giftBox.classList.add('opened');setTimeout(()=>{$('#pleadMsg').classList.add('show')},600)}
 
-// 提交地址
-$('#submitAddrBtn').addEventListener('click',()=>{
-  const addr=$('#pleadInput').value.trim();
-  if(!addr){$('#pleadInput').focus();return}
-  localStorage.setItem('qixi_address',addr);
-  localStorage.setItem('qixi_time',new Date().toLocaleString('zh-CN'));
-  $('#pleadMsg').classList.remove('show');
-  setTimeout(()=>{$('#thankMsg').classList.add('show')},400);
 });
 </script>
 </body>
