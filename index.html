@@ -161,9 +161,13 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
 .sent-msg{font-family:"Ma Shan Zheng",cursive;font-size:clamp(20px,5vw,40px);color:var(--rose);opacity:0;transform:translateY(20px);transition:all 0.8s var(--ease-soft);pointer-events:none;text-align:center}
 .sent-msg.show{opacity:1;transform:translateY(0);pointer-events:auto}
 .sent-line{display:block;margin-bottom:0.8rem}
-.sent-addr-wrap{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin-bottom:1rem;font-family:"Noto Serif SC",serif}
-.modify-btn{font-family:"Noto Serif SC",serif;font-size:13px;color:var(--rose);background:none;border:1px solid var(--pink-2);border-radius:18px;padding:0.3rem 1rem;cursor:pointer;transition:all 0.3s}
-.modify-btn:hover,.modify-btn:active{background:var(--pink-1)}
+.sent-addr-wrap{display:block;font-size:clamp(14px,3vw,20px);color:var(--wine);margin-bottom:1rem;font-family:"Noto Serif SC",serif;background:rgba(255,255,255,0.5);padding:0.5rem 1rem;border-radius:8px;word-break:break-all}
+.sent-actions{display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;margin-top:0.5rem}
+.modify-btn,.copy-btn{font-family:"Noto Serif SC",serif;font-size:13px;color:var(--rose);background:none;border:1px solid var(--pink-2);border-radius:18px;padding:0.3rem 1rem;cursor:pointer;transition:all 0.3s}
+.modify-btn:hover,.modify-btn:active,.copy-btn:hover,.copy-btn:active{background:var(--pink-1)}
+.copy-btn{color:#fff;background:var(--rose);border-color:var(--rose)}
+.copy-btn:hover,.copy-btn:active{background:var(--wine);border-color:var(--wine)}
+.copy-btn.copied{background:#4a7c59;border-color:#4a7c59}
 
 @media (max-width:360px){
   .cover-title{font-size:42px}
@@ -273,8 +277,11 @@ body{font-family:"Cormorant Garamond","Noto Serif SC",serif;background:var(--bg)
     </form>
     <p class="sent-msg" id="sentMsg">
       <span class="sent-line">礼物已经在路上了 ❤️</span>
-      <span class="sent-addr-wrap">寄到:<span id="confirmAddr"></span></span>
-      <button class="modify-btn" id="modifyAddrBtn" type="button">修改地址</button>
+      <span class="sent-addr-wrap" id="confirmAddrWrap">寄到:<span id="confirmAddr"></span></span>
+      <span class="sent-actions">
+        <button class="copy-btn" id="copyAddrBtn" type="button">复制地址</button>
+        <button class="modify-btn" id="modifyAddrBtn" type="button">修改地址</button>
+      </span>
     </p>
   </div>
 </section>
@@ -390,6 +397,29 @@ giftForm.addEventListener('submit',async e=>{e.preventDefault();const addr=addre
 function showError(msg){errorMsg.textContent=msg;errorMsg.classList.add('show')}
 addressInput.addEventListener('input',()=>{if(addressInput.value.trim().length>=3)errorMsg.classList.remove('show')});
 $('#modifyAddrBtn').addEventListener('click',()=>{sentMsg.classList.remove('show');giftForm.classList.add('show');submitBtn.disabled=false;submitBtn.textContent='锁定向你';addressInput.focus()});
+
+// 复制地址
+$('#copyAddrBtn').addEventListener('click',()=>{
+  const addr=$('#confirmAddr').textContent;
+  navigator.clipboard.writeText(addr).then(()=>{
+    const btn=$('#copyAddrBtn');
+    btn.textContent='已复制 ✓';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='复制地址';btn.classList.remove('copied')},2000);
+  }).catch(()=>{
+    // 兜底方案
+    const ta=document.createElement('textarea');
+    ta.value=addr;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn=$('#copyAddrBtn');
+    btn.textContent='已复制 ✓';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='复制地址';btn.classList.remove('copied')},2000);
+  });
+});
 </script>
 </body>
 </html>
